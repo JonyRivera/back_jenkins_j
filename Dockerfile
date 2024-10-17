@@ -1,4 +1,4 @@
-# Etapa 1: Construcción de la aplicación
+#  Etapa 1: Construcción de la aplicación
 FROM node:18 AS build
 
 # Establecer el directorio de trabajo en el contenedor
