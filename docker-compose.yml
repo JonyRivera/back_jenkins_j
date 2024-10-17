@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: .  # Ruta al Dockerfile del backend
+      dockerfile: Dockerfile
+    image: backend-image
+    ports:
+      - "3000:3000"  # Exponer el puerto del backend en la máquina host
+    networks:
+      - my-network
+    depends_on:
+      - postgres-db
+    environment:
+      - DATABASE_URL=postgres://postgres:12345@postgres-db:5432/postgres
+    deploy:
+      replicas: 2  # Especifica el número de réplicas
+
+  postgres-db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=backend_jenkins
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_jenkins:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my-network
+    deploy:
+      replicas: 2  # Especifica el número de réplicas
+
+networks:
+  my-network:
+    driver: overlay  
+
+volumes:
+  db_jenkins:
